@@ -1,0 +1,20 @@
+import * as esbuild from "esbuild";
+
+const watch = process.argv.includes("--watch");
+const context = await esbuild.context({
+  entryPoints: ["extension/src/extension.ts"],
+  bundle: true,
+  outfile: "dist/extension.js",
+  external: ["vscode"],
+  format: "cjs",
+  platform: "node",
+  target: "node20",
+  sourcemap: true,
+  logLevel: "info",
+});
+
+if (watch) await context.watch();
+else {
+  await context.rebuild();
+  await context.dispose();
+}

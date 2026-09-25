@@ -1,0 +1,100 @@
+{
+  "name": "codemesh",
+  "displayName": "CodeMesh",
+  "description": "A role-based coding-agent workbench with controlled tools and auditable execution traces.",
+  "version": "0.1.0",
+  "publisher": "codemesh-labs",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.92.0"
+  },
+  "categories": ["Machine Learning", "Other"],
+  "keywords": ["agent", "coding", "multi-model", "cursor", "ai"],
+  "activationEvents": ["onView:codemesh.sidebar", "onCommand:codemesh.open"],
+  "main": "./dist/extension.js",
+  "scripts": {
+    "clean": "node scripts/clean.mjs",
+    "build:webview": "vite build",
+    "build:extension": "node scripts/build-extension.mjs",
+    "build": "node scripts/clean.mjs && vite build && node scripts/build-extension.mjs",
+    "watch": "node scripts/build-extension.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "node scripts/clean.mjs && vite build && node scripts/build-extension.mjs && vsce package --no-dependencies --allow-missing-repository --readme-path docs/marketplace.md"
+  },
+  "dependencies": {
+    "@vscode/codicons": "^0.0.36",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/vscode": "^1.92.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vscode/vsce": "^3.2.1",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.1",
+    "vitest": "^2.1.8"
+  },
+  "contributes": {
+    "commands": [
+      {"command": "codemesh.open", "title": "CodeMesh: Open Workbench"},
+      {"command": "codemesh.clearTrace", "title": "CodeMesh: Clear Execution Trace"}
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {"id": "codemesh", "title": "CodeMesh", "icon": "media/codemesh.svg"}
+      ]
+    },
+    "views": {
+      "codemesh": [
+        {"type": "webview", "id": "codemesh.sidebar", "name": "Agent Workbench"}
+      ]
+    },
+    "configuration": {
+      "title": "CodeMesh",
+      "properties": {
+        "codemesh.models": {
+          "type": "array",
+          "default": [],
+          "description": "OpenAI-compatible model endpoints. API keys are stored separately in SecretStorage.",
+          "items": {
+            "type": "object",
+            "required": ["id", "displayName", "baseUrl", "model"],
+            "properties": {
+              "id": {"type": "string"},
+              "displayName": {"type": "string"},
+              "baseUrl": {"type": "string"},
+              "model": {"type": "string"}
+            }
+          }
+        },
+        "codemesh.roles": {
+          "type": "object",
+          "default": {"explorer": "", "coder": "", "reviewer": ""},
+          "properties": {
+            "explorer": {"type": "string"},
+            "coder": {"type": "string"},
+            "reviewer": {"type": "string"}
+          }
+        },
+        "codemesh.validationCommand": {
+          "type": "string",
+          "default": "npm test",
+          "description": "Command the coding flow runs after edits."
+        },
+        "codemesh.maxReviewerLoops": {
+          "type": "number",
+          "default": 1,
+          "minimum": 0,
+          "maximum": 3
+        }
+      }
+    }
+  }
+}

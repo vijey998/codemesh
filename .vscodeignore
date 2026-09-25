@@ -1,0 +1,15 @@
+.git/**
+.vscode/**
+core/**
+extension/src/**
+webview/src/**
+tests/**
+examples/**
+scripts/**
+node_modules/**
+README.md
+tsconfig.json
+vite.config.ts
+vitest.config.ts
+package-lock.json
+pnpm-lock.yaml
